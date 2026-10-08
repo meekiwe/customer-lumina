@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lumina Electric Air Mobile App</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Itim&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+  --blue:#0879d9; --deep:#0755a5; --sky:#49c7f5; --ice:#eefaff; --white:#fff;
+  --text:#12385b; --muted:#6d8aa3; --line:#d7ebf7; --gold:#ffc84a;
+  --shadow:0 12px 30px rgba(0,86,160,.12); --radius:20px;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+
+body{
+  margin:0;
+  font-family:'Noto Sans Thai',sans-serif;
+  color:var(--text);
+  background:
+   radial-gradient(circle at 15% 10%,#fff 0 8%,transparent 20%),
+   linear-gradient(180deg,#dff7ff 0%,#f7fdff 55%,#e7f8ff 100%);
+  min-height:100vh;
+  padding-bottom: 85px;
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+
+/* Header มือถือ */
+.app-header {
+  background: linear-gradient(180deg,#0567c8,#064b9c);
+  color: white;
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(0,85,165,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  font-family: Itim, cursive;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.brand small {
+  display: block;
+  font-size: 9px;
+  opacity: 0.85;
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon-btn {
+  background: #ffffff22;
+  border: 1px solid #ffffff40;
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0755a5;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 4px 12px;
+  z-index: 1000;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.06);
+}
+
+.nav-item {
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 16px;
+  transition: all 0.25s ease;
+  min-width: 50px;
+}
+
+.nav-item .icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: currentColor;
+}
+
+.nav-item .icon svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.nav-item .label {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.nav-item.active {
+  color: var(--blue);
+  background: var(--ice);
+}
+
+.nav-item.active .label {
+  display: block;
+}
+
+/* Main Container */
+.main {
+  padding: 16px;
+}
+
+.greeting-card {
+  margin-bottom: 16px;
+}
+
+.greeting-card h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.greeting-card p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.grid { display: grid; gap: 14px; }
+.grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+
+.card {
+  background: #ffffffeb;
+  border: 1px solid #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.card h2, .card h3 { margin: 0 0 10px; }
+.muted { color: var(--muted); font-size: 13px; }
+
+.hero {
+  background: linear-gradient(120deg,#075bb0,#079be1 60%,#53d5f7);
+  color: white;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero h2 { font-size: 22px; margin: 0 0 5px; }
+.hero p { margin: 0 0 14px; font-size: 13px; }
+
+.btn {
+  padding: 10px 15px;
+  border-radius: 12px;
+  font-weight: 700;
+  background: var(--blue);
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+.btn.secondary { background: #e9f7ff; color: #0768b9; }
+.btn.white { background: #fff; color: #086bc0; }
+.btn.danger { background: #fff0f0; color: #d33; }
+
+.service { transition: .2s; cursor: pointer; }
+.service h3 { margin: 4px 0 2px; font-size: 16px; }
+
+.stat { display: flex; align-items: center; gap: 13px; }
+.stat strong { font-size: 22px; display: block; }
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 18px 0 10px;
+}
+
+.section-title h2 { margin: 0; font-size: 18px; }
+
+.list { display: grid; gap: 9px; }
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fbfeff;
+  gap: 8px;
+}
+
+.filters { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 6px; 
+}
+#search { grid-column: span 2; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 6px 9px;
+  border: 1px solid #cfe4f1;
+  border-radius: 8px;
+  background: white;
+  color: var(--text);
+  outline: none;
+  font-size: 12px;
+}
+
+.multi { position: relative; }
+.multi>button {
+  width: 100%;
+  padding: 6px 9px;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #cfe4f1;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.multi-menu {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  top: 36px;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: var(--shadow);
+  max-height: 150px;
+  overflow: auto;
+}
+
+.multi.open .multi-menu { display: block; }
+.multi-menu label { display: block; padding: 4px; font-size: 12px; }
+
+.products { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+.product { border: 1px solid var(--line); border-radius: 16px; padding: 13px; background: #fff; }
+.ac-box {
+  height: 75px;
+  border-radius: 14px;
+  background: linear-gradient(#f8fdff,#d9f3ff);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #0768b9;
+  margin-bottom: 10px;
+}
+
+.price { font-size: 20px; font-weight: 800; color: #056ac4; }
+.tag { font-size: 11px; background: #eaf7ff; color: #0675c8; padding: 4px 7px; border-radius: 99px; }
+
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.compare-table td, .compare-table th { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+.compare-table th { background: #eef9ff; }
+
+.btu-result { font-size: 22px; font-weight: 800; color: #0874cc; margin: 10px 0; }
+.progress { height: 9px; background: #e5f3fa; border-radius: 99px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: linear-gradient(90deg,#0b7ddd,#5ad6f5); border-radius: 99px; }
+.stars { color: #f4ae00; letter-spacing: 2px; }
+
+.chat { height: 350px; display: flex; flex-direction: column; }
+.messages { flex: 1; overflow: auto; padding: 8px; }
+.msg { max-width: 85%; padding: 10px 13px; border-radius: 15px; margin: 7px 0; background: #edf8ff; font-size: 14px; }
+.msg.me { margin-left: auto; background: #0879d9; color: #fff; }
+.chat-input { display: flex; gap: 8px; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 80px;
+  background: #063f82;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  display: none;
+  z-index: 2000;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #003f7b66;
+  z-index: 1500;
+  place-items: center;
+  padding: 16px;
+}
+
+.modal.show { display: grid; }
+.modal-box {
+  background: white;
+  border-radius: 20px;
+  padding: 18px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: auto;
+}
+
+.close { float: right; background: #edf8ff; border-radius: 50%; width: 32px; height: 32px; }
+
+.promo-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.promo { position: relative; overflow: hidden; min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; }
+.promo .promo-badge { display: inline-block; background: #fff; color: #0874cc; border-radius: 999px; padding: 4px 9px; font-size: 11px; font-weight: 800; }
+.promo h3 { font-size: 17px; margin: 8px 0 4px; }
+.promo p { margin: 0 0 10px; font-size: 12px; }
+
+.contact-grid-mini { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 6px; 
+  margin-bottom: 12px; 
+}
+.contact-btn-mini { 
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 2px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--blue);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.tech-lead { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.tech-lead-card { display: flex; align-items: center; gap: 12px; }
+.tech-large { width: 64px; height: 64px; border-radius: 18px; background: #dff6ff; display: grid; place-items: center; font-size: 14px; font-weight: bold; color: #0768b9; }
+
+.team-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.team-card { border: 1px solid var(--line); border-radius: 15px; padding: 12px; background: #fbfeff; }
+
+.house-switch { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.house-btn { background: #eef9ff; color: #086bc0; border: 1px solid var(--line); padding: 8px 12px; border-radius: 11px; font-weight: 700; font-size: 12px; white-space: nowrap; }
+.house-btn.active { background: #0879d9; color: #fff; }
+
+.home-summary { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.air-records { display: grid; gap: 10px; }
+.air-record { border: 1px solid var(--line); border-radius: 15px; padding: 12px; background: #fbfeff; }
+
+.status-ok { color: #0a9b63; font-weight: bold; }
+.status-warn { color: #c47a00; font-weight: bold; }
+.status-error { color: #d33; font-weight: bold; }
+
+.small-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.kv { padding: 8px; border-radius: 11px; background: #f3faff; border: 1px solid #e3f2fa; font-size: 12px; }
+.kv b { display: block; margin-bottom: 2px; }
+
+.house-label { font-size: 11px; color: #0874cc; font-weight: 800; }
+
+.status-live-box { border: 1px solid #bde3f8; border-radius: 16px; padding: 14px; background: linear-gradient(180deg,#f2faff,#e7f5fd); }
+.status-badge { display: inline-flex; align-items: center; gap: 6px; background: #0879d9; color: #fff; padding: 6px 12px; border-radius: 99px; font-weight: bold; font-size: 12px; }
+.status-badge i { width: 8px; height: 8px; background: #5ad6f5; border-radius: 50%; display: inline-block; }
+
+/* ===============================
+   Lumina Customer Login — Google Sheets
+   =============================== */
+#loginScreen{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 15%,rgba(255,255,255,.9) 0 2px,transparent 3px),
+    linear-gradient(160deg,#dff7ff 0%,#8edcff 42%,#0879d9 100%);
+}
+#loginScreen.hidden{display:none}
+.login-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.login-star{
+  position:absolute;
+  color:#fff;
+  font-size:14px;
+  opacity:.85;
+  animation:loginTwinkle 1.8s ease-in-out infinite;
+  text-shadow:0 0 10px #fff,0 0 18px #b9efff;
+}
+@keyframes loginTwinkle{
+  0%,100%{transform:scale(.65) rotate(0deg);opacity:.35}
+  50%{transform:scale(1.35) rotate(20deg);opacity:1}
+}
+.login-card{
+  width:min(420px,100%);
+  position:relative;
+  z-index:2;
+  padding:30px 24px 24px;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:30px;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 25px 70px rgba(0,73,145,.25);
+  backdrop-filter:blur(12px);
+}
+.login-brand{
+  text-align:center;
+  margin-bottom:22px;
+}
+.login-brand .lumina{
+  font-family:Itim,cursive;
+  color:#0755a5;
+  font-size:48px;
+  line-height:1;
+  text-shadow:0 3px 0 #fff,0 0 16px rgba(73,199,245,.5);
+}
+.login-brand .welcome{
+  margin-top:7px;
+  color:#0879d9;
+  font-size:15px;
+  font-weight:800;
+}
+.login-input-wrap{
+  position:relative;
+  margin-top:12px;
+}
+.login-input-wrap input{
+  width:100%;
+  height:50px;
+  padding:10px 15px;
+  border-radius:16px;
+  border:1.5px solid #c8e8f7;
+  background:#fafdff;
+  font-size:15px;
+  transition:.2s;
+}
+.login-input-wrap input:focus{
+  border-color:#49c7f5;
+  box-shadow:0 0 0 4px rgba(73,199,245,.16);
+}
+.login-btn{
+  width:100%;
+  margin-top:16px;
+  height:52px;
+  border-radius:17px;
+  color:#fff;
+  font-weight:800;
+  background:linear-gradient(135deg,#0755a5,#0879d9,#49c7f5);
+  box-shadow:0 10px 25px rgba(8,121,217,.25);
+  position:relative;
+  overflow:hidden;
+}
+.login-btn:active{transform:scale(.98)}
+.login-hint{
+  text-align:center;
+  color:#6d8aa3;
+  font-size:11px;
+  margin-top:12px;
+}
+.login-error{
+  display:none;
+  margin-top:10px;
+  padding:9px 12px;
+  border-radius:12px;
+  background:#fff0f0;
+  color:#c33;
+  text-align:center;
+  font-size:12px;
+}
+.spark{
+  position:fixed;
+  z-index:100000;
+  pointer-events:none;
+  color:#fff;
+  font-size:14px;
+  text-shadow:0 0 8px #fff,0 0 16px #49c7f5;
+  animation:sparkFly .65s ease-out forwards;
+}
+@keyframes sparkFly{
+  0%{transform:translate(-50%,-50%) scale(.3) rotate(0);opacity:1}
+  100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.5) rotate(90deg);opacity:0}
+}
+.login-loading{
+  display:none;
+  text-align:center;
+  color:#0879d9;
+  font-size:12px;
+  margin-top:10px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ===============================
+     Lumina Customer Login
+     =============================== -->
+<div id="loginScreen">
+  <div class="login-stars" id="loginStars"></div>
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="lumina">Lumina ✦</div>
+      <div class="welcome">✨ ยินดีต้อนรับเข้าสู่ Customer App ✨</div>
+    </div>
+
+    <form id="loginForm" onsubmit="handleCustomerLogin(event)">
+      <div class="login-input-wrap">
+        <input id="loginUsername" autocomplete="username" placeholder="ชื่อผู้ใช้" required>
+      </div>
+      <div class="login-input-wrap">
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="รหัสผ่าน" required>
+      </div>
+
+      <button class="login-btn" type="submit">เข้าสู่ระบบ ✨</button>
+      <div class="login-loading" id="loginLoading">กำลังตรวจสอบข้อมูล ✨</div>
+      <div class="login-error" id="loginError"></div>
+    </form>
+
+    <div class="login-hint">Lumina Electric Air • Customer</div>
+  </div>
+</div>
+
+
+<!-- Header แอปด้านบน -->
+<header class="app-header">
+  <div class="brand">
+    <div>
+      <div class="logo">Lumina</div>
+      <small>Electric Air</small>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" onclick="toast('ยังไม่มีการแจ้งเตือนใหม่')">🔔</button>
+    <div class="avatar">TK</div>
+  </div>
+</header>
+
+<main class="main">
+  <!-- ข้อมูลทักทาย -->
+  <div class="greeting-card">
+    <h1>สวัสดีครับ คุณเธียรภัทร์</h1>
+    <p id="date"></p>
+  </div>
+
+  <!-- หน้าหลัก -->
+  <section class="page active" id="home">
+    <div class="hero card">
+      <h2>เย็นทั่วบ้าน สบายทุกวัน</h2>
+      <p>โปรโมชั่นแนะนำ บริการยอดนิยม ภาพรวมบ้านของคุณ</p>
+      <button class="btn white" onclick="go('air')">เลือกซื้อเครื่องปรับอากาศ →</button>
+    </div>
+
+    <div class="section-title"><h2>บริการยอดนิยม</h2></div>
+    <div class="grid grid-4">
+      <div class="card service" onclick="confirmService('ล้างแอร์')"><h3>ล้างแอร์</h3><span class="muted">บริการล้างแอร์และตรวจเช็กระบบ</span></div>
+      <div class="card service" onclick="confirmService('ซ่อมแอร์')"><h3>ซ่อมแอร์</h3><span class="muted">ตรวจซ่อมแซมโดยช่างผู้เชี่ยวชาญ</span></div>
+      <div class="card service" onclick="confirmService('เช็คน้ำยาแอร์')"><h3>เช็คน้ำยาแอร์</h3><span class="muted">ตรวจระดับน้ำยาและระบบความเย็น</span></div>
+      <div class="card service" onclick="confirmBookingWithDetails()"><h3>จองคิวช่าง</h3><span class="muted">นัดหมายติดตั้ง ซ่อมแซม หรือตรวจเช็ก</span></div>
+    </div>
+
+    <div class="section-title">
+      <h2>โปรโมชั่นแนะนำ</h2>
+      <button class="btn secondary" style="width:auto; padding:6px 12px; font-size:12px;" onclick="showAllPromos()">ดูทั้งหมด</button>
+    </div>
+    <div class="promo-grid">
+      <div class="card hero promo">
+        <div>
+          <span class="promo-badge">โปรเด็ด</span>
+          <h3>โปรโมชั่นแอร์</h3>
+          <p>ส่วนลดพิเศษสำหรับแอร์รุ่นที่ร่วมรายการ พร้อมสิทธิ์บริการติดตั้งตามเงื่อนไขร้าน</p>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:10px;">
+          <button class="btn white" style="flex:1" onclick="askPromo('โปโมชั่นแอร์')">สอบถาม</button>
+          <button class="btn secondary" style="flex:1" onclick="showPromoDetail('แอร์')">รายละเอียด</button>
+        </div>
+      </div>
+
+      <div class="card promo" style="background:linear-gradient(135deg,#f2fbff,#fff)">
+        <div>
+          <span class="tag">ประหยัดค่าใช้จ่าย</span>
+          <h3>โปรโมชั่นล้างแอร์</h3>
+          <p>บริการล้างแอร์ราคาพิเศษสำหรับลูกค้า Lumina</p>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:10px;">
+          <button class="btn" style="flex:1" onclick="askPromo('โปโมชั่นล้างแอร์')">สอบถาม</button>
+          <button class="btn secondary" style="flex:1" onclick="showPromoDetail('ล้างแอร์')">รายละเอียด</button>
+        </div>
+      </div>
+
+      <div class="card promo" style="background:linear-gradient(135deg,#fffdf1,#f5fbff)">
+        <div>
+          <span class="tag">ส่วนลดแลกซื้อ</span>
+          <h3>ส่วนลดแลกแอร์เก่า</h3>
+          <p>นำเครื่องปรับอากาศเครื่องเก่ามาแลกรับส่วนลดสำหรับแอร์ใหม่</p>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:10px;">
+          <button class="btn" style="flex:1" onclick="askPromo('แลกแอร์เก่า')">สอบถาม</button>
+          <button class="btn secondary" style="flex:1" onclick="showPromoDetail('แลกแอร์เก่า')">รายละเอียด</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px; background:linear-gradient(135deg,#eef9ff,#ffffff)">
+      <h3 style="color:#0755a5">ข้อมูลการจองคิวช่างวันนี้</h3>
+      <div class="list">
+        <div class="row" style="flex-direction:column; align-items:flex-start;">
+          <div>
+            <b>คิวที่ 1 (รอบเช้า 09:30 น.): คุณเธียรภัทร์</b>
+            <div class="muted">ประเภทงาน: ล้างแอร์ประจำปี 4 เครื่อง</div>
+            <div class="muted">สถานที่: ถนนทหาร ซอยสุขสว่าง อ.เมืองอุดรธานี | โทร: 082-123-4567</div>
+          </div>
+          <button class="btn secondary" style="margin-top:8px" onclick="go('tech')">ดูสถานะช่าง</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title"><h2>ภาพรวมบ้านของคุณ</h2><span class="house-label" id="homeHouseLabel">บ้านหลัก</span></div>
+    <div class="grid grid-2">
+     <div class="card stat"><div><strong>3</strong><span class="muted">บ้านในเครือ</span></div></div>
+     <div class="card stat"><div><strong>6</strong><span class="muted">เครื่องทั้งหมด</span></div></div>
+     <div class="card stat"><div><strong>5</strong><span class="muted">เครื่องต่อ Arduino</span></div></div>
+     <div class="card stat"><div><strong>1</strong><span class="muted">รายการแจ้งเตือน/เสีย</span></div></div>
+    </div>
+  </section>
+
+  <!-- ติดต่อแอดมิน -->
+  <section class="page" id="admin">
+    <div class="contact-grid-mini">
+      <button class="contact-btn-mini" onclick="openChannel('LINE Official')">💬 LINE</button>
+      <button class="contact-btn-mini" onclick="openChannel('Facebook Page')">📘 Facebook</button>
+      <button class="contact-btn-mini" onclick="openChannel('Instagram')">📷 IG</button>
+      <button class="contact-btn-mini" onclick="callShop()">📞 โทรหาเรา</button>
+    </div>
+
+    <div class="card chat">
+      <h3>แชตติดต่อแอดมิน</h3>
+      <div class="messages" id="messages"><div class="msg">สวัสดีครับ คุณเธียรภัทร์ มีอะไรให้ Lumina ช่วยเหลือสอบถามได้เลยครับ</div></div>
+      <div class="chat-input"><input id="chatText" placeholder="พิมพ์ข้อความ..."><button class="btn" style="width:auto" onclick="sendChat()">ส่ง</button></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>หัวข้อติดต่อด่วน</h3>
+      <div class="list">
+        <div class="row">สอบถามราคา/โปรโมชั่น <button class="btn secondary" style="width:auto" onclick="startChat('สอบถามราคาและโปรโมชั่น')">สอบถาม</button></div>
+        <div class="row">จองติดตั้ง/ล้าง/ซ่อม <button class="btn secondary" style="width:auto" onclick="startChat('ต้องการจองบริการ')">จองบริการ</button></div>
+        <div class="row">แจ้งปัญหาแอร์ <button class="btn secondary" style="width:auto" onclick="startChat('ต้องการแจ้งปัญหาแอร์')">แจ้งปัญหา</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- เครื่องปรับอากาศ -->
+  <section class="page" id="air">
+   <div class="hero card">
+     <h2>ค้นหาเครื่องปรับอากาศและคำนวณ BTU</h2>
+     <p>เลือกซื้อสินค้า เปรียบเทียบสเปค และคำนวณ BTU สำหรับห้องของคุณ</p>
+     <button class="btn white" onclick="scrollToBTU()">คำนวณ BTU แอร์ ↓</button>
+   </div>
+   
+   <div class="card" style="margin-top:12px; padding: 12px;">
+    <h3 style="font-size:14px; margin-bottom:8px;">ตัวกรองสินค้า</h3>
+    <div class="filters">
+     <input id="search" placeholder="ค้นหาแบรนด์/รุ่น..." oninput="filterProducts()">
+     <select id="formType" onchange="filterProducts()">
+       <option value="">ทรงแอร์ทั้งหมด</option>
+       <option value="ติดผนัง">แอร์ติดผนัง</option>
+       <option value="4ทิศทาง">แอร์ฝังฝ้า 4 ทิศทาง</option>
+       <option value="แขวนใต้ฝ้า">แอร์แขวนใต้ฝ้า</option>
+       <option value="ตู้ตั้ง">แอร์ตู้ตั้งพื้น</option>
+     </select>
+     <div class="multi" id="brandMulti"><button onclick="toggleMulti('brandMulti')">แบรนด์ ▾</button><div class="multi-menu">
+      <label><input type="checkbox" value="Daikin" onchange="filterProducts()"> Daikin</label><label><input type="checkbox" value="Mitsubishi" onchange="filterProducts()"> Mitsubishi</label><label><input type="checkbox" value="Carrier" onchange="filterProducts()"> Carrier</label><label><input type="checkbox" value="LG" onchange="filterProducts()"> LG</label>
+     </div></div>
+     <select id="type" onchange="filterProducts()"><option value="">ระบบทั้งหมด</option><option>Inverter</option><option>Standard</option></select>
+     <select id="price" onchange="filterProducts()"><option value="">ราคาทั้งหมด</option><option value="25000">≤ 25,000</option><option value="35000">≤ 35,000</option><option value="50000">≤ 50,000</option></select>
+     <select id="btu" onchange="filterProducts()"><option value="">BTU ทั้งหมด</option><option value="12000">≤ 12,000</option><option value="18000">≤ 18,000</option><option value="24000">≤ 24,000</option><option value="36000">≤ 36,000</option></select>
+     <select id="sort" onchange="filterProducts()"><option value="">เรียงตามราคา</option><option value="low">ต่ำไปสูง</option><option value="high">สูงไปต่ำ</option></select>
+     <button class="btn danger" style="padding:4px; font-size:11px;" onclick="resetFilter()">ล้างตัวกรอง</button>
+    </div>
+    <div class="products" id="products"></div>
+   </div>
+
+   <div class="grid grid-2" style="margin-top:16px">
+    <div class="card"><h3>การเปรียบเทียบราคาแอร์ 2 เครื่อง</h3><p class="muted">บอกสเปค ราคา ข้างๆ กัน (เลือกได้สูงสุด 2 เครื่อง)</p><div id="compare"></div></div>
+    <div class="card" id="btuSection"><h3>การคำนวณ BTU แอร์</h3>
+     <div class="grid grid-3">
+       <div><label style="font-size:12px">กว้าง (ม.)</label><input id="w" type="number" min="1" step=".1" placeholder="เช่น 4"></div>
+       <div><label style="font-size:12px">ยาว (ม.)</label><input id="l" type="number" min="1" step=".1" placeholder="เช่น 5"></div>
+       <div><label style="font-size:12px">สูง (ม.)</label><input id="h" type="number" min="1" step=".1" value="2.6"></div>
+     </div>
+     <div class="grid grid-2" style="margin-top:10px">
+       <div>
+         <label style="font-size:12px">ประเภทห้อง</label>
+         <select id="room">
+           <option value="750">ห้องนอน</option>
+           <option value="900">ห้องครัว</option>
+           <option value="1000">ห้องทำงาน</option>
+           <option value="1200">ร้านค้า/คนเยอะ</option>
+         </select>
+       </div>
+       <div>
+         <label style="font-size:12px">ช่องแสง</label>
+         <select id="light">
+           <option value="1">น้อย/ไม่โดนแดด</option>
+           <option value="1.1">ปานกลาง</option>
+           <option value="1.2">มาก/แดดจัด</option>
+         </select>
+       </div>
+     </div>
+     <button class="btn" style="margin-top:12px;" onclick="calcBTU()">ปุ่มกดเพื่อคำนวณ BTU</button>
+     <div id="btuResult" class="btu-result">กรอกข้อมูลเพื่อคำนวณ</div>
+     <p class="muted" style="font-size:11px">*เป็นค่าประมาณเบื้องต้น ควรให้ช่างประเมินหน้างานจริงก่อนติดตั้ง</p>
+    </div>
+   </div>
+  </section>
+
+  <!-- ติดต่อช่าง -->
+  <section class="page" id="tech">
+    <div class="hero card"><h2>ติดต่อช่าง</h2><p>ข้อมูลช่าง สถานะการทำงาน และรีวิวบริการ</p></div>
+
+    <div class="section-title"><h2>หัวหน้าทีมช่าง</h2></div>
+    <div class="tech-lead">
+      <div class="card">
+        <div class="tech-lead-card">
+          <div class="tech-large">ทีมช่าง</div>
+          <div><h2 style="margin:0; font-size:18px">ช่างพีช</h2><div class="stars">★★★★★</div><div class="muted">หัวหน้าทีม • ประจำ อ.เมืองอุดรธานี</div><div class="muted">เชี่ยวชาญ: ล้างแอร์ • ซ่อมแอร์ • ติดตั้ง</div></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;">
+          <button class="btn" onclick="bookTech('ช่างพีช')">จองคิว</button>
+          <button class="btn secondary" onclick="showTeamInfo()">ข้อมูลทีมช่าง</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>รีวิวรวมทีมช่าง</h3>
+        <div class="stars" style="font-size:20px">★★★★★</div>
+        <b style="font-size:20px">4.9/5</b>
+        <p class="muted">จากรีวิวลูกค้า 128 รายการ</p>
+        <div class="progress"><i style="width:98%"></i></div>
+        <small class="muted">ความพึงพอใจโดยรวม 98%</small>
+      </div>
+    </div>
+
+    <div class="section-title"><h2>ข้อมูลทีมช่างที่เคยมาทำงาน</h2></div>
+    <div class="card">
+      <div class="team-grid">
+        <div class="team-card"><b>ช่างพีช</b><div class="muted">หัวหน้าทีม</div><div class="stars">★★★★★</div><button class="btn secondary" style="margin-top:6px" onclick="showPerson('ช่างพีช')">ข้อมูล & รีวิว</button></div>
+        <div class="team-card"><b>ช่างปั้น</b><div class="muted">ผู้ช่วยช่าง</div><div class="stars">★★★★★</div><button class="btn secondary" style="margin-top:6px" onclick="showPerson('ช่างปั้น')">ข้อมูล & รีวิว</button></div>
+        <div class="team-card"><b>ช่างทิว</b><div class="muted">ช่างฝึกหัด</div><div class="stars">★★★★☆</div><button class="btn secondary" style="margin-top:6px" onclick="showPerson('ช่างทิว')">ข้อมูล & รีวิว</button></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px">
+     <div class="card">
+       <h3>สถานะของช่างปัจจุบัน</h3>
+       <p class="muted">แสดงข้อมูลสถานะการปฏิบัติงานล่าสุดของทีมช่าง (อัปเดตแบบเรียลไทม์โดยช่าง)</p>
+       <div class="status-live-box">
+         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+           <b>ทีมช่างพีช (คิวที่ 1)</b>
+           <span class="muted" style="font-size:11px">โทร: 082-123-4567</span>
+         </div>
+         <div style="margin-bottom:15px">
+           <span class="muted" style="font-size:12px; display:block; margin-bottom:4px">สถานะงานปัจจุบัน:</span>
+           <div class="status-badge"><i></i> <span id="currentStatusText">กำลังดำเนินการล้างแอร์ประจำปี (ถนนทหาร ซอยสุขสว่าง)</span></div>
+         </div>
+         <div style="background:#fff; border-radius:12px; padding:12px; border:1px solid var(--line)">
+           <div style="font-size:11px; color:var(--muted); margin-bottom:6px">ความก้าวหน้าการทำงาน</div>
+           <div class="progress" style="height:10px"><i id="statusProgress" style="width:65%"></i></div>
+         </div>
+       </div>
+     </div>
+
+     <div class="card">
+       <h3>รีวิวหรือให้ดาว เพื่อเป็นอันจบงาน</h3>
+       <p class="muted">เมื่อช่างปฏิบัติงานเสร็จแล้ว คุณสามารถเขียนรีวิวให้คะแนนดาวเพื่อเสร็จสิ้นบริการ</p>
+       <select id="reviewTech"><option>ช่างพีช (หัวหน้า)</option><option>ช่างปั้น (ผู้ช่วยช่าง)</option><option>ช่างทิว (ช่างฝึกหัด)</option></select>
+       <select id="starScore" style="margin-top:8px">
+         <option value="5">★★★★★ (5 ดาว)</option>
+         <option value="4">★★★★☆ (4 ดาว)</option>
+         <option value="3">★★★☆☆ (3 ดาว)</option>
+       </select>
+       <textarea id="review" style="width:100%;height:80px;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px" placeholder="เขียนรีวิวการทำงานของทีมช่าง..."></textarea>
+       <button class="btn" style="margin-top:8px;" onclick="submitReview()">ส่งรีวิวจบงาน</button>
+     </div>
+    </div>
+  </section>
+
+  <!-- ข้อมูลส่วนตัว -->
+  <section class="page" id="profile">
+    <div class="hero card"><h2>ข้อมูลส่วนตัว</h2><p>ข้อมูลลูกค้า ที่อยู่ บ้านในเครือ และสถานะการเชื่อมต่อ Arduino</p></div>
+
+    <div class="grid grid-2" style="margin-top:16px">
+      <div class="card">
+        <h3>ข้อมูลลูกค้า</h3>
+        <div class="list">
+          <div class="row"><span>ชื่อลูกค้า</span><b>คุณเธียรภัทร์</b></div>
+          <div class="row"><span>เบอร์โทรศัพท์</span><b>082-123-4567</b></div>
+          <div class="row"><span>ที่อยู่หลัก</span><b>ถนนทหาร ซอยสุขสว่าง อ.เมืองอุดรธานี</b></div>
+          <div class="row"><span>ภาพรวมแอร์ในเครือ</span><b>6 เครื่อง (3 บ้าน)</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>บ้านในเครือ</h3>
+        <div class="house-switch">
+          <button class="house-btn active" data-house="บ้านหลัก" onclick="selectHouse('บ้านหลัก')">บ้านหลัก</button>
+          <button class="house-btn" data-house="บ้านคุณตาคุณยาย" onclick="selectHouse('บ้านคุณตาคุณยาย')">บ้านคุณตาคุณยาย</button>
+          <button class="house-btn" data-house="บ้านคุณปู่คุณย่า" onclick="selectHouse('บ้านคุณปู่คุณย่า')">บ้านคุณปู่คุณย่า</button>
+        </div>
+        <div class="home-summary" style="margin-top:12px">
+          <div class="kv"><b id="selectedHouseName">บ้านหลัก</b><span id="selectedHouseDetail">ถนนทหาร ซอยสุขสว่าง อ.เมืองอุดรธานี</span></div>
+          <div class="kv"><b>จำนวนแอร์</b><span id="selectedHouseCount">3 เครื่อง</span></div>
+        </div>
+        <div style="margin-top:10px" id="arduinoStatsSummary"></div>
+      </div>
+    </div>
+
+    <div class="section-title"><h2>ข้อมูลเครื่องปรับอากาศภายในบ้านที่เลือก</h2><span class="house-label" id="airHouseLabel">บ้านหลัก</span></div>
+    <div class="card">
+      <div class="air-records" id="houseAirList"></div>
+    </div>
+  </section>
+</main>
+
+<!-- แถบเมนูล่าง -->
+<nav class="bottom-nav">
+  <button class="nav-item active" data-page="home">
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </span>
+    <span class="label">หน้าหลัก</span>
+  </button>
+  <button class="nav-item" data-page="admin">
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+    </span>
+    <span class="label">ติดต่อแอดมิน</span>
+  </button>
+  <button class="nav-item" data-page="air">
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 10H5V5h14v8zm-7 4c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/></svg>
+    </span>
+    <span class="label">เครื่องปรับอากาศ</span>
+  </button>
+  <button class="nav-item" data-page="tech">
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+    </span>
+    <span class="label">ติดต่อช่าง</span>
+  </button>
+  <button class="nav-item" data-page="profile">
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </span>
+    <span class="label">ข้อมูลส่วนตัว</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modal-box"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+
+<script>
+
+/* ===============================
+   Lumina — Google Sheets only
+   =============================== */
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNMGlLYh8EGHFtmhlW5sR5ObiY5LyHPLBj3lmyvBQNP_JapIAaTNoa_UZ9g5CsDA6iLQ/exec";
+let currentCustomer = JSON.parse(sessionStorage.getItem("luminaCustomer") || "null");
+
+function isGoogleSheetConfigured(){
+  return GOOGLE_SCRIPT_URL &&
+    !GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT");
+}
+
+async function googleSheetRequest(action, payload={}){
+  if(!isGoogleSheetConfigured()){
+    throw new Error("ยังไม่ได้ใส่ Google Apps Script Web App URL");
+  }
+  const params = new URLSearchParams();
+  params.set("action", action);
+  Object.entries(payload || {}).forEach(([key,value])=>{
+    if(value !== undefined && value !== null) params.set(key, String(value));
+  });
+  const response = await fetch(GOOGLE_SCRIPT_URL + "?" + params.toString(), {method:"GET"});
+  const data = await response.json();
+  if(!data.success) throw new Error(data.message || "Google Sheets request failed");
+  return data;
+}
+
+function createSpark(x,y,count=8){
+  const symbols=["✦","✧","⋆","✧","★"];
+  for(let i=0;i<count;i++){
+    const s=document.createElement("span");
+    s.className="spark";
+    s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    s.style.left=x+"px";
+    s.style.top=y+"px";
+    s.style.setProperty("--dx",(Math.random()*100-50)+"px");
+    s.style.setProperty("--dy",(Math.random()*100-65)+"px");
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),700);
+  }
+}
+
+function createLoginBackgroundStars(){
+  const box=document.getElementById("loginStars");
+  if(!box) return;
+  for(let i=0;i<34;i++){
+    const s=document.createElement("span");
+    s.className="login-star";
+    s.textContent=i%3===0?"✦":"✧";
+    s.style.left=(Math.random()*100)+"%";
+    s.style.top=(Math.random()*100)+"%";
+    s.style.animationDelay=(Math.random()*1.8)+"s";
+    s.style.fontSize=(9+Math.random()*12)+"px";
+    box.appendChild(s);
+  }
+}
+
+async function handleCustomerLogin(event){
+  event.preventDefault();
+
+  const username=document.getElementById("loginUsername").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  const error=document.getElementById("loginError");
+  const loading=document.getElementById("loginLoading");
+  const button=document.querySelector(".login-btn");
+
+  createSpark(window.innerWidth/2, window.innerHeight/2, 18);
+  error.style.display="none";
+  loading.style.display="block";
+  button.disabled=true;
+
+  try{
+    const result=await googleSheetRequest("login",{username,password});
+
+    currentCustomer=result.user;
+    sessionStorage.setItem("luminaCustomer",JSON.stringify(currentCustomer));
+
+    createSpark(window.innerWidth/2, window.innerHeight/2, 30);
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.body.classList.add("lumina-logged-in");
+
+    if(currentCustomer.name){
+      const greeting=document.querySelector(".greeting-card h1");
+      if(greeting) greeting.textContent="สวัสดีครับ "+currentCustomer.name;
+    }
+
+    await loadCustomerChat();
+    await loadCustomerJobStatus();
+
+  }catch(err){
+    error.textContent=err.message || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+    error.style.display="block";
+    createSpark(window.innerWidth/2, window.innerHeight/2, 10);
+  }finally{
+    loading.style.display="none";
+    button.disabled=false;
+  }
+}
+
+async function loadCustomerChat(){
+  if(!currentCustomer) return;
+  try{
+    const result=await googleSheetRequest("getMessages",{
+      username:currentCustomer.username,
+      role:"customer"
+    });
+    const box=document.getElementById("messages");
+    if(!box) return;
+    box.innerHTML="";
+    (result.messages||[]).forEach(m=>{
+      const div=document.createElement("div");
+      div.className="msg"+(m.sender_role==="customer"?" me":"");
+      div.textContent=m.message;
+      box.appendChild(div);
+    });
+    box.scrollTop=box.scrollHeight;
+  }catch(err){
+    console.warn("โหลดแชตไม่สำเร็จ:",err);
+  }
+}
+
+async function loadCustomerJobStatus(){
+  const statusText=document.getElementById("currentStatusText");
+  const statusProgress=document.getElementById("statusProgress");
+  if(!statusText || !statusProgress || !currentCustomer) return;
+
+  try{
+    const result=await googleSheetRequest("getJobs",{
+      username:currentCustomer.username,
+      role:"customer"
+    });
+    const jobs=result.jobs || [];
+    const data=jobs.length ? jobs[jobs.length-1] : null;
+    if(!data){
+      statusText.textContent="ยังไม่มีข้อมูลงาน";
+      statusProgress.style.width="0%";
+      return;
+    }
+
+    const status=String(data.status || "").toLowerCase();
+    let progress=0;
+    if(status==="assigned") progress=10;
+    if(status==="in_progress") progress=50;
+    if(status==="done") progress=100;
+    let text="รอช่างเริ่มงาน";
+    if(status==="done") text="งานเสร็จสิ้น";
+    else if(status==="in_progress") text="กำลังดำเนินงาน";
+    else if(status==="assigned") text="แจกงานให้ช่างแล้ว";
+
+    statusText.textContent=text;
+    statusProgress.style.width=progress+"%";
+  }catch(err){
+    console.warn("โหลดสถานะงานไม่สำเร็จ:",err);
+  }
+}
+
+async function sendChatToGoogleSheet(txt){
+  if(!currentCustomer) throw new Error("ไม่พบข้อมูลลูกค้า");
+  await googleSheetRequest("sendMessage",{
+    sender:currentCustomer.username,
+    receiver:"admin",
+    message:txt
+  });
+}
+
+const products=[
+ {id:1,brand:'Daikin',model:'FTKF18XV2S',form:'ติดผนัง',type:'Inverter',btu:18000,price:23900,seer:'21.45',feature:'Streamer กรองอากาศ'},
+ {id:2,brand:'Mitsubishi',model:'MSY-GY18VF',form:'ติดผนัง',type:'Inverter',btu:18300,price:24900,seer:'20.55',feature:'Dual Barrier Coating'},
+ {id:3,brand:'Carrier',model:'42TVAB013',form:'ติดผนัง',type:'Inverter',btu:12000,price:18900,seer:'19.20',feature:'PM2.5 Filter'},
+ {id:4,brand:'Daikin',model:'FCFC18DV2S',form:'4ทิศทาง',type:'Inverter',btu:18500,price:34900,seer:'18.50',feature:'กระจายลมรอบทิศทาง 360 องศา'},
+ {id:5,brand:'Carrier',model:'40TGV0241UP',form:'แขวนใต้ฝ้า',type:'Inverter',btu:24200,price:32500,seer:'17.80',feature:'ทำงานเงียบ ส่งลมไกล'},
+ {id:6,brand:'LG',model:'APQ30GS',form:'ตู้ตั้ง',type:'Inverter',btu:30000,price:42900,seer:'16.90',feature:'หน้าจอ LED ดีไซน์หรูหรา'}
+];
+let selected=[];
+
+/* อัปเดตข้อมูลเครื่องปรับอากาศตามที่แก้ไขล่าสุด */
+const houseData={
+ 'บ้านหลัก':{
+   address:'ถนนทหาร ซอยสุขสว่าง อ.เมืองอุดรธานี',
+   payer:'คุณเธียรภัทร์ (ผู้ดูแลหลัก)',
+   airs:[
+     {name:'เครื่องที่ 1: ห้องนอนใหญ่', room:'ห้องนอนใหญ่', brand:'Daikin', model:'FTKF18XV2S', btu:'18,000 BTU', status:'ปกติ', arduinoText:'ดึงข้อมูลปกติ (ต่อ Arduino)', isArduino:true, warranty:'15 ม.ค. 2028', lastWash:'15 ม.ค. 2026', payer:'คุณเธียรภัทร์ (ผู้ดูแลหลัก)', class:'status-ok'},
+     {name:'เครื่องที่ 2: ห้องนอน 2', room:'ห้องนอน 2', brand:'Carrier', model:'42TVAB013', btu:'12,000 BTU', status:'ปกติ', arduinoText:'ดึงข้อมูลปกติ (ต่อ Arduino)', isArduino:true, warranty:'2 ก.พ. 2028', lastWash:'2 ก.พ. 2026', payer:'คุณเธียรภัทร์ (ผู้ดูแลหลัก)', class:'status-ok'},
+     {name:'เครื่องที่ 3: อาคารพาณิชย์ ชั้น 1', room:'อาคารพาณิชย์ ชั้น 1', brand:'Mitsubishi', model:'MSY-GY18VF', btu:'18,000 BTU', status:'ปกติ', arduinoText:'ดึงข้อมูลปกติ (ต่อ Arduino)', isArduino:true, warranty:'10 ธ.ค. 2027', lastWash:'10 ธ.ค. 2025', payer:'คุณเธียรภัทร์ (ผู้ดูแลหลัก)', class:'status-ok'}
+   ]
+ },
+ 'บ้านคุณตาคุณยาย':{
+   address:'ซอยจินตคาม อ.เมืองอุดรธานี',
+   payer:'คุณเธียรภัทร์ (จ่ายแทน)',
+   airs:[
+     {name:'เครื่องที่ 1: ห้องโถงรับแขก', room:'ห้องโถงรับแขก', brand:'LG', model:'ISQ12', btu:'12,000 BTU', status:'เสีย (ตามแจ้ง)', arduinoText:'ไม่มี Arduino (เสียตามที่ลูกค้าบอก)', isArduino:false, warranty:'15 ม.ค. 2028', lastWash:'15 ม.ค. 2026', payer:'คุณเธียรภัทร์ (จ่ายแทน)', class:'status-error'},
+     {name:'เครื่องที่ 2: ห้องนอน', room:'ห้องนอน', brand:'Daikin', model:'FTKF18XV2S', btu:'18,000 BTU', status:'ปกติ', arduinoText:'ดึงข้อมูลปกติ (ต่อ Arduino)', isArduino:true, warranty:'2 ก.พ. 2028', lastWash:'2 ก.พ. 2026', payer:'คุณเธียรภัทร์ (จ่ายแทน)', class:'status-ok'}
+   ]
+ },
+ 'บ้านคุณปู่คุณย่า':{
+   address:'ถนนนเรศวร อ.เมืองอุดรธานี',
+   payer:'คุณเธียรภัทร์ (จ่ายแทน)',
+   airs:[
+     {name:'เครื่องที่ 1: ห้องนั่งเล่น', room:'ห้องนั่งเล่น', brand:'Mitsubishi', model:'MSY-GY18VF', btu:'18,000 BTU', status:'ปกติ', arduinoText:'ดึงข้อมูลปกติ (ต่อ Arduino)', isArduino:true, warranty:'15 ม.ค. 2028', lastWash:'15 ม.ค. 2026', payer:'คุณเธียรภัทร์ (จ่ายแทน)', class:'status-ok'}
+   ]
+ }
+};
+
+let currentSelectedHouse = 'บ้านหลัก';
+
+document.getElementById('date').innerText = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+function go(pageId){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  
+  const navBtn = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if(navBtn) navBtn.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll('.nav-item').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const page = btn.getAttribute('data-page');
+    go(page);
+  });
+});
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(()=>t.style.display='none', 2500);
+}
+
+function openModal(html){
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+}
+
+function selectHouse(houseName){
+  currentSelectedHouse = houseName;
+  document.querySelectorAll('.house-btn').forEach(btn=>{
+    if(btn.getAttribute('data-house') === houseName) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+
+  const data = houseData[houseName];
+  document.getElementById('selectedHouseName').innerText = houseName;
+  document.getElementById('selectedHouseDetail').innerText = data.address;
+  document.getElementById('selectedHouseCount').innerText = data.airs.length + ' เครื่อง';
+  document.getElementById('airHouseLabel').innerText = houseName;
+  
+  let arduinoCount = data.airs.filter(a => a.isArduino).length;
+  document.getElementById('arduinoStatsSummary').innerHTML = `<div class="kv"><b>การเชื่อมต่อ Arduino</b><span>ดึงข้อมูลปกติ ${arduinoCount} / ${data.airs.length} เครื่อง</span></div>`;
+
+  renderHouseAirs(houseName);
+}
+
+function renderHouseAirs(houseName){
+  const list = houseData[houseName].airs;
+  const container = document.getElementById('houseAirList');
+  container.innerHTML = '';
+
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'air-record';
+    card.innerHTML = `
+      <div class="air-record-head" style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <b>${item.name}</b>
+          <div class="muted">แบรนด์ / รุ่น: ${item.brand} ${item.model} (${item.btu})</div>
+        </div>
+        <span class="${item.class}">${item.status}</span>
+      </div>
+      <div class="small-grid">
+        <div class="kv"><b>การเชื่อมต่อ Arduino:</b> ${item.arduinoText}</div>
+        <div class="kv"><b>ระยะประกัน:</b> ${item.warranty}</div>
+        <div class="kv"><b>ล้างครั้งล่าสุด:</b> ${item.lastWash}</div>
+        <div class="kv"><b>เจ้าของ/ผู้ชำระ:</b> ${item.payer}</div>
+      </div>
+      <div style="margin-top:10px; display:flex; gap:6px;">
+        <button class="btn secondary" style="font-size:12px; padding:6px;" onclick="confirmService('ล้างแอร์ (${item.name})')">จองล้างเครื่องนี้</button>
+        <button class="btn secondary" style="font-size:12px; padding:6px;" onclick="confirmService('ตรวจซ่อม (${item.name})')">แจ้งซ่อม/เช็ก</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function filterProducts(){
+  const s = document.getElementById('search').value.toLowerCase();
+  const form = document.getElementById('formType').value;
+  const type = document.getElementById('type').value;
+  const price = document.getElementById('price').value;
+  const btu = document.getElementById('btu').value;
+  const sort = document.getElementById('sort').value;
+
+  const checkedBrands = Array.from(document.querySelectorAll('#brandMulti input:checked')).map(cb=>cb.value);
+
+  let res = products.filter(p=>{
+    const matchSearch = p.brand.toLowerCase().includes(s) || p.model.toLowerCase().includes(s);
+    const matchForm = form ? p.form === form : true;
+    const matchBrand = checkedBrands.length > 0 ? checkedBrands.includes(p.brand) : true;
+    const matchType = type ? p.type === type : true;
+    const matchPrice = price ? p.price <= parseInt(price) : true;
+    const matchBtu = btu ? p.btu <= parseInt(btu) : true;
+    return matchSearch && matchForm && matchBrand && matchType && matchPrice && matchBtu;
+  });
+
+  if(sort === 'low') res.sort((a,b)=>a.price-b.price);
+  if(sort === 'high') res.sort((a,b)=>b.price-a.price);
+
+  renderProducts(res);
+}
+
+function renderProducts(items){
+  const el = document.getElementById('products');
+  el.innerHTML = '';
+  if(items.length===0){
+    el.innerHTML='<div class="muted" style="text-align:center;padding:20px;">ไม่พบสินค้าที่ตรงตามเงื่อนไข</div>';
+    return;
+  }
+  items.forEach(p=>{
+    const isChecked = selected.includes(p.id) ? 'checked' : '';
+    el.innerHTML += `
+      <div class="product">
+        <div class="ac-box">${p.brand} ${p.form}</div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <b>${p.brand} ${p.model}</b>
+            <div class="muted">${p.btu.toLocaleString()} BTU • SEER ${p.seer}</div>
+            <div class="tag" style="display:inline-block; margin-top:4px;">${p.feature}</div>
+          </div>
+          <div class="price">฿${p.price.toLocaleString()}</div>
+        </div>
+        <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+          <label style="font-size:12px;" class="muted">
+            <input type="checkbox" ${isChecked} onchange="toggleCompare(${p.id})"> เปรียบเทียบ
+          </label>
+          <button class="btn secondary" style="width:auto; padding:6px 12px; font-size:12px;" onclick="confirmBookingProduct('${p.brand} ${p.model}')">สนใจสั่งซื้อ</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function toggleCompare(id){
+  if(selected.includes(id)){
+    selected = selected.filter(x=>x!==id);
+  } else {
+    if(selected.length>=2){
+      toast('เปรียบเทียบได้สูงสุด 2 เครื่อง');
+      filterProducts();
+      return;
+    }
+    selected.push(id);
+  }
+  renderCompare();
+}
+
+function renderCompare(){
+  const el = document.getElementById('compare');
+  if(selected.length===0){
+    el.innerHTML='<p class="muted">เลือกกดติ๊ก "เปรียบเทียบ" ที่รายการสินค้าเพื่อดูความต่าง</p>';
+    return;
+  }
+  const list = products.filter(p=>selected.includes(p.id));
+  let html = `<table class="compare-table"><tr><th>หัวข้อ</th>${list.map(x=>`<th>${x.brand} ${x.model}</th>`).join('')}</tr>`;
+  html += `<tr><td>ราคา</td>${list.map(x=>`<td class="price" style="font-size:14px">฿${x.price.toLocaleString()}</td>`).join('')}</tr>`;
+  html += `<tr><td>BTU</td>${list.map(x=>`<td>${x.btu.toLocaleString()}</td>`).join('')}</tr>`;
+  html += `<tr><td>SEER</td>${list.map(x=>`<td>${x.seer}</td>`).join('')}</tr>`;
+  html += `<tr><td>จุดเด่น</td>${list.map(x=>`<td>${x.feature}</td>`).join('')}</tr>`;
+  html += `</table>`;
+  el.innerHTML = html;
+}
+
+function toggleMulti(id){
+  document.getElementById(id).classList.toggle('open');
+}
+
+function resetFilter(){
+  document.getElementById('search').value='';
+  document.getElementById('formType').value='';
+  document.getElementById('type').value='';
+  document.getElementById('price').value='';
+  document.getElementById('btu').value='';
+  document.getElementById('sort').value='';
+  document.querySelectorAll('#brandMulti input').forEach(c=>c.checked=false);
+  filterProducts();
+}
+
+function calcBTU(){
+  const w = parseFloat(document.getElementById('w').value);
+  const l = parseFloat(document.getElementById('l').value);
+  const h = parseFloat(document.getElementById('h').value)||2.6;
+  const room = parseFloat(document.getElementById('room').value);
+  const light = parseFloat(document.getElementById('light').value);
+
+  if(!w || !l){
+    toast('กรุณากรอกขนาดกว้างและยาวของห้อง');
+    return;
+  }
+
+  const area = w * l;
+  let baseBTU = area * room * light;
+  if(h > 3) baseBTU *= 1.1;
+
+  const finalBTU = Math.round(baseBTU / 1000) * 1000;
+  document.getElementById('btuResult').innerText = `แนะนำขนาด: ~ ${finalBTU.toLocaleString()} BTU`;
+}
+
+function scrollToBTU(){
+  document.getElementById('btuSection').scrollIntoView({behavior:'smooth'});
+}
+
+async function sendChat(){
+  const input=document.getElementById("chatText");
+  const txt=input.value.trim();
+  if(!txt) return;
+
+  const box=document.getElementById("messages");
+  box.innerHTML += `<div class="msg me"></div>`;
+  box.lastElementChild.textContent=txt;
+  input.value="";
+  box.scrollTop=box.scrollHeight;
+
+  try{
+    await sendChatToGoogleSheet(txt);
+  }catch(err){
+    toast(err.message || "ส่งข้อความไม่สำเร็จ");
+  }
+}
+
+function startChat(topic){
+  go('admin');
+  document.getElementById('chatText').value = topic;
+  sendChat();
+}
+
+function openChannel(name){
+  toast(`กำลังเปิดช่องทาง ${name}...`);
+}
+
+function callShop(){
+  toast('กำลังโทรออก 082-123-4567...');
+}
+
+function confirmService(name){
+  openModal(`
+    <h3>ยืนยันการขอรับบริการ</h3>
+    <p>คุณต้องการแจ้งความประสงค์ขอรับบริการ <b>${name}</b> สำหรับบ้านคุณเธียรภัทร์ ใช่หรือไม่?</p>
+    <button class="btn" onclick="closeModal(); toast('ส่งข้อมูลเรียบร้อย เจ้าหน้าที่จะติดต่อกลับครับ');">ยืนยันส่งข้อมูล</button>
+  `);
+}
+
+function confirmBookingWithDetails(){
+  openModal(`
+    <h3>จองคิวช่าง</h3>
+    <p style="font-size:12px" class="muted">ระบุประเภทงานและวันที่ต้องการนัดหมาย</p>
+    <select id="mService" style="margin-bottom:8px"><option>ล้างแอร์</option><option>ซ่อมแอร์/ตรวจเช็คปัญหา</option><option>ติดตั้งแอร์ใหม่</option></select>
+    <input type="date" style="margin-bottom:12px">
+    <button class="btn" onclick="closeModal(); toast('จองคิวช่างเรียบร้อยแล้ว');">ตกลงจองคิว</button>
+  `);
+}
+
+function confirmBookingProduct(pName){
+  openModal(`
+    <h3>สั่งซื้อ/สอบถามแอร์</h3>
+    <p>รุ่นที่เลือก: <b>${pName}</b></p>
+    <button class="btn" onclick="closeModal(); startChat('สนใจสั่งซื้อรุ่น ${pName}');">แชตสอบถามแอดมิน</button>
+  `);
+}
+
+function askPromo(promoName){
+  startChat(`สอบถามรายละเอียด ${promoName}`);
+}
+
+function showPromoDetail(type){
+  if(type==='แอร์') openModal(`<h3>โปรโมชั่นแอร์</h3><p>รับส่วนลดทันทีสูงสุด 15% พร้อมฟรีค่าบริการติดตั้งและอุปกรณ์มาตรฐาน</p>`);
+  else if(type==='ล้างแอร์') openModal(`<h3>โปรโมชั่นล้างแอร์</h3><p>ล้างแอร์ 3 เครื่องขึ้นไป รับส่วนลดเครื่องละ 100 บาท ตรวจเช็คน้ำยาฟรี</p>`);
+  else openModal(`<h3>ส่วนลดแลกแอร์เก่า</h3><p>นำแอร์เก่ามาเทิร์นรับส่วนลดสูงสุด 3,000 บาท สำหรับซื้อแอร์ใหม่ทุกรุ่น</p>`);
+}
+
+function showAllPromos(){
+  toast('แสดงโปรโมชั่นทั้งหมดเรียบร้อย');
+}
+
+function bookTech(name){
+  confirmBookingWithDetails();
+}
+
+function showTeamInfo(){
+  openModal(`<h3>ทีมช่างพีช</h3><p>ทีมช่างประจำพื้นที่อุดรธานี ผ่านการรับรองมาตรฐาน ชำนาญงานดูแลแอร์บ้านและอาคารมากกว่า 8 ปี</p>`);
+}
+
+function showPerson(pName){
+  openModal(`<h3>ข้อมูล ${pName}</h3><div class="stars">★★★★★ (5.0)</div><p class="muted">ประวัติการทำงานเรียบร้อย สุภาพ บริการดี ตรงต่อเวลา</p>`);
+}
+
+function submitReview(){
+  const rev = document.getElementById('review').value;
+  if(!rev){ toast('กรุณากรอกข้อความรีวิว'); return; }
+  toast('ขอบคุณสำหรับรีวิว! เสร์จสิ้นการปิดงาน');
+  document.getElementById('review').value='';
+}
+createLoginBackgroundStars();
+
+if(currentCustomer){
+  document.getElementById("loginScreen").classList.add("hidden");
+  const greeting=document.querySelector(".greeting-card h1");
+  if(greeting && currentCustomer.name) greeting.textContent="สวัสดีครับ "+currentCustomer.name;
+  loadCustomerChat();
+  loadCustomerJobStatus();
+}else{
+  // Keep the original Customer App hidden behind the login screen until authentication succeeds.
+}
+
+selectHouse('บ้านหลัก');
+filterProducts();
+
+// รีเฟรชแชตและสถานะจาก Google Sheets เป็นระยะ
+setInterval(()=>{
+  if(currentCustomer){
+    loadCustomerChat();
+    loadCustomerJobStatus();
+  }
+},5000);
+</script>
+</body>
+</html>
